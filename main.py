@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 from collections import defaultdict
 import anthropic
+import json
 
 # Load environment variables
 load_dotenv()
@@ -10,6 +11,7 @@ load_dotenv()
 # Get API tokens from environment variables
 TODOIST_API_TOKEN = os.getenv('TODOIST_API_TOKEN')
 CLAUDE_API_KEY = os.getenv('CLAUDE_API_KEY')
+PRINTER_SHORTCODE = os.getenv('PRINTER_SHORTCODE')
 
 # Todoist API endpoints
 TASKS_URL = "https://api.todoist.com/rest/v2/tasks"
@@ -19,6 +21,9 @@ PROJECTS_URL = "https://api.todoist.com/rest/v2/projects"
 todoist_headers = {
     "Authorization": f"Bearer {TODOIST_API_TOKEN}"
 }
+
+# PrinterBot webhook URL
+PRINTERBOT_WEBHOOK_URL = f"https://printerbot.xyz/printJob/webHook/{PRINTER_SHORTCODE}"
 
 def get_data(url):
     response = requests.get(url, headers=todoist_headers)
@@ -79,7 +84,6 @@ Corresponding JSON output:
     {{"type": "text", "value": "Coffee - $2.50", "bold": true}},
     {{"type": "line_break"}},
     {{"type": "text", "value": "Muffin - $3.00", "bold": true}},
-    {{"type": "horizontal_rule", "partition": 1}},
     {{"type": "line_break"}},
     {{"type": "text", "value": "Thank you for your visit!", "align": "right"}},
     {{"type": "auto_cut"}}
@@ -101,6 +105,18 @@ Print only the valid JSON.
         return response.content[0].text
     except Exception as e:
         return f"An error occurred while communicating with Claude: {str(e)}"
+
+def send_to_printerbot(content):
+    headers = {
+        "Content-Type": "application/json"
+    }
+    try:
+        response = requests.post(PRINTERBOT_WEBHOOK_URL, headers=headers, data=content)
+        response.raise_for_status()
+        print("Successfully sent to PrinterBot")
+    except requests.exceptions.RequestException as error:
+        print(f"An error occurred while sending data to PrinterBot: {error}")
+
 try:
     # Get projects and tasks
     projects = get_data(PROJECTS_URL)
@@ -123,12 +139,15 @@ try:
             # Sort tasks by priority (highest first)
             sorted_tasks = sorted(project_tasks, key=lambda x: x['priority'], reverse=True)
             for task in sorted_tasks:
-                message += f"    {task['content']}\n"
+                message += f"{task['content']}\n"
         
         # Send the message to Claude and get the response
         claude_response = send_to_claude(message)
         print("Claude's Response:")
         print(claude_response)
+
+        # Send Claude's response to PrinterBot
+        send_to_printerbot(claude_response)
     else:
         print("No tasks found matching the criteria.")
 
