@@ -50,13 +50,10 @@ For each line:
 - If it's text, create a text object: {{"type": "text", "value": "line content"}}
 Apply formatting based on the following rules:
 
-- If the line is in all caps, set "font_h": "large" and "bold": true
-- If the line starts and ends with *, set "bold": true and remove the asterisks
-- If the line starts with >, set "align": "right"
-- If the line starts with >>, set "align": "center"
+- If the line seems like a category or heading, set "bold": true
 
-Add a horizontal rule after every 5 lines of text: {{"type": "horizontal_rule", "partition": 1}}
-End the content array with an auto cut: {{"type": "auto_cut"}}
+Add a horizontal rule where appropriate: {{"type": "horizontal_rule", "partition": 1}}
+End the content array with 2 extra line breaks and an auto cut: {{"type": "auto_cut"}}
 
 Example:
 
@@ -86,6 +83,9 @@ Corresponding JSON output:
     {{"type": "text", "value": "Muffin - $3.00", "bold": true}},
     {{"type": "line_break"}},
     {{"type": "text", "value": "Thank you for your visit!", "align": "right"}},
+    {{"type": "line_break"}},
+    {{"type": "line_break"}},
+    {{"type": "line_break"}},
     {{"type": "auto_cut"}}
   ]
 }}
