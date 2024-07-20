@@ -45,7 +45,7 @@ try:
             # Sort tasks by priority (highest first)
             sorted_tasks = sorted(project_tasks, key=lambda x: x['priority'], reverse=True)
             for task in sorted_tasks:
-                print(f"  {task['content']}")
+                print(f"    {task['content']}")
     else:
         print("No tasks found matching the criteria.")
 
