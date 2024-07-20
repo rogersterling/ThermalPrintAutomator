@@ -52,7 +52,14 @@ This project fetches tasks from Todoist, formats them using Claude AI, and sends
    - Connect the printer to your Raspberry Pi 4 using the [USB to Serial Cable](https://www.amazon.com/gp/product/B00NH11KIK/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&th=1)
    - Image your Raspberry Pi 4 with the pbot.img file from [this Dropbox link](https://www.dropbox.com/s/qozhg9th5vjngih/pbot.img?dl=0)
 
-4. Run the script:
+4. Set up the Raspberry Pi:
+   - After imaging the Raspberry Pi, plug it in and wait 5-6 minutes for the PrinterBot WiFi to appear.
+   - Connect to the PrinterBot WiFi using the password "password".
+   - Input your home network WiFi information.
+   - Provide your email address (required to obtain your printer shortcode).
+   - Wait for the setup process to complete and note down your printer shortcode.
+
+5. Run the script:
    ```
    python main.py
    ```
